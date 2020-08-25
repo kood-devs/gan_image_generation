@@ -1,6 +1,6 @@
 """
     Download images from flickr using selenium
-
+    参考：https://www.oreilly.co.jp/books/9784873117782/
 """
 import os
 import sys
@@ -8,6 +8,12 @@ from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
+
+# ダウンロードしたい画像の条件を指定
+keyword = 'cat'
+dir_path = os.getcwd() + '\\images'
+download_num = 100
 
 
 def set_download_dir(download_path):
@@ -19,11 +25,7 @@ def set_download_dir(download_path):
     return options
 
 
-def download_images_from_flickr(keyword, download_path=None, download_num=5, img_size='Small'):
-    # ダウンロード先のパスを指定
-    # download_path = str(download_path)
-    # keyword = str(keyword)
-
+def download_images_from_flickr(keyword, download_path=None, download_num=10, img_size='Small'):
     # 操作するブラウザを開く
     options = set_download_dir(download_path)
     driver = webdriver.Chrome('chromedriver.exe', options=options)
@@ -38,7 +40,7 @@ def download_images_from_flickr(keyword, download_path=None, download_num=5, img
     sleep(10)
 
     # ダウンロードを許可している写真であれば、ダウンロードを実施
-    for i in range(int(download_num)):
+    for i in range(download_num):
         counter = 0
         get_images = driver.find_elements_by_class_name("overlay")
 
@@ -47,7 +49,8 @@ def download_images_from_flickr(keyword, download_path=None, download_num=5, img
             counter += 1
             sleep(1)
 
-        # ダウンロードを許可していないケースがあるのでtryで処理
+        # ダウンロードを許可していない画像があるのでtryで処理
+        # 画像を選択
         try:
             get_image = get_images[i]
             get_image.click()
@@ -55,6 +58,7 @@ def download_images_from_flickr(keyword, download_path=None, download_num=5, img
         except:
             pass
 
+        # 選択した画像をダウンロード
         try:
             get_image = driver.find_element_by_class_name("ui-icon-download")
             get_image.click()
@@ -72,11 +76,6 @@ def download_images_from_flickr(keyword, download_path=None, download_num=5, img
 
 
 def main():
-    # 条件を指定
-    dir_path = os.getcwd() + '\\images'
-    keyword = 'cat'
-    download_num = 100
-
     # ダウンロードを実施
     download_images_from_flickr(keyword, dir_path, download_num)
 

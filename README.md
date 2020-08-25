@@ -1,1 +1,1 @@
-# gan_image_generation
+# Image Generation using GAN and Selenium
